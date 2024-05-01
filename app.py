@@ -235,37 +235,49 @@ def authenticate_user():
     st.title("💰Wealth Whisperer💰")
     authorization_url, state = flow.authorization_url()
     st.session_state['state'] = state
-    # st.write(f"Please log in [here]({authorization_url})")
-    # if st.button('Log in'):
-    st.markdown(f'<a href="{authorization_url}" target="_self">Log in with Google</a>', unsafe_allow_html=True)
-        # webbrowser.open_new_tab(authorization_url)
+    # Display the login link only if the user hasn't clicked it yet
+    if 'authentication_initiated' not in st.session_state:
+        st.markdown(f'<a href="{authorization_url}" target="_self">Click here to log in with Google</a>', unsafe_allow_html=True)
+        st.session_state['authentication_initiated'] = True
 
-def get_user_info(code):
-    flow.fetch_token(code=code)
-    credentials = flow.credentials
-    session = requests.Session()
-    user_info = session.get('https://www.googleapis.com/oauth2/v3/userinfo',
-                            headers={'Authorization': f'Bearer {credentials.token}'}).json()
-    return user_info
-
-if 'authentication_status' not in st.session_state:
-    st.session_state['authentication_status'] = None
-
-if st.session_state['authentication_status'] is None:
-    if 'code' not in st.query_params:
-        authenticate_user()
-    else:
-        code = st.query_params['code']
+def check_authentication():
+    if 'code' in st.experimental_get_query_params():
+        code = st.experimental_get_query_params()['code'][0]
         user_info = get_user_info(code)
         if user_info:
             st.session_state['authentication_status'] = 'Authenticated'
             st.session_state['user_info'] = user_info
             if 'email' in user_info:
                 st.session_state['email'] = user_info['email']
-                # Loading the chat history now that we have the user's email
                 st.session_state['chat_history'] = load_chat_history(user_info['email'])
-            else:
-                st.error("Email not available. Check your Google app permissions.")
+            return True
+        else:
+            st.error("Failed to authenticate. Please try logging in again.")
+    return False
+
+# def get_user_info(code):
+#     flow.fetch_token(code=code)
+#     credentials = flow.credentials
+#     session = requests.Session()
+#     user_info = session.get('https://www.googleapis.com/oauth2/v3/userinfo',
+#                             headers={'Authorization': f'Bearer {credentials.token}'}).json()
+#     return user_info
+
+if 'authentication_status' not in st.session_state:
+    st.session_state['authentication_status'] = None
+
+if st.session_state['authentication_status'] is None:
+    authenticated = check_authentication()
+    if not authenticated:
+        authenticate_user()
+else:
+    handle_chat_interaction(stuff_chain, db, collector)
+    display_news_in_sidebar()
+    if 'email' in st.session_state and 'chat_history_updated' not in st.session_state:
+        save_chat_history(st.session_state['email'], st.session_state['chat_history'])
+        st.session_state['chat_history_updated'] = True
+        st.session_state['chat_history'] = load_chat_history(st.session_state['email'])
+        display_chat_history(collector)
 
 if st.session_state['authentication_status'] == 'Authenticated':
     # "Redirecting" to the chat interface
