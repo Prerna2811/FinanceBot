@@ -31,7 +31,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 CLIENT_ID = st.secrets['CLIENT_ID']
 CLIENT_SECRET = st.secrets['CLIENT_SECRET']
 
-REDIRECT_URI = "https://wealthwishperer.streamlit.app/"
+REDIRECT_URI = "https://wealthwishperer.streamlit.app"
 os.environ['GOOGLE_API_KEY'] = st.secrets['GOOGLE_API_KEY']
 genai.configure(api_key=os.environ['GOOGLE_API_KEY'])
 news_api_key = st.secrets['news_api_key']
