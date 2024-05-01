@@ -7,5 +7,6 @@ streamlit== 1.32.2
 streamlit-feedback== 0.1.2
 streamlit-mic-recorder
 newsapi-python
+google-auth-oauthlib
 google-cloud-speech
 google-cloud-storage
