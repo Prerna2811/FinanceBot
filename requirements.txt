@@ -5,6 +5,7 @@ langchain-core == 0.1.1
 langchain-google-genai == 0.0.6
 streamlit== 1.32.2
 streamlit-feedback== 0.1.2
+streamlit-mic-recorder
 newsapi-python
 google-cloud-speech
 google-cloud-storage
