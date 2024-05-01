@@ -30,11 +30,22 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 # Definining your Google client ID, client secret,redirect URI, gemini api,newsapi
 CLIENT_ID = st.secrets['CLIENT_ID']
 CLIENT_SECRET = st.secrets['CLIENT_SECRET']
+
 REDIRECT_URI = "http://localhost:8501/"
 os.environ['GOOGLE_API_KEY'] = st.secrets['GOOGLE_API_KEY']
 genai.configure(api_key=os.environ['GOOGLE_API_KEY'])
 news_api_key = st.secrets['news_api_key']
 newsapi = NewsApiClient(api_key=news_api_key)
+
+# Construct the client configuration directly from environment variables
+client_config = {
+    "web":{
+        "client_id":CLIENT_ID ,
+        "project_id":"arched-logic-419416",
+        "auth_uri":"https://accounts.google.com/o/oauth2/auth",
+        "token_uri":"https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret":CLIENT_SECRET}}
 
 
 
@@ -214,8 +225,8 @@ def display_news_in_sidebar():
         st.sidebar.write("No news articles found.")
 
 # Google OAuth flow setup
-flow = Flow.from_client_secrets_file(
-    'client_secrets.json',
+flow = Flow.from_client_config(
+    client_config,
     scopes=["openid", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
     redirect_uri=REDIRECT_URI
 )
