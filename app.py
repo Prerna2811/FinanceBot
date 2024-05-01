@@ -225,7 +225,7 @@ def display_news_in_sidebar():
         st.sidebar.write("No news articles found.")
 
 # Google OAuth flow setup
-flow = Flow.from_client_secrets_file(
+flow = Flow.from_client_config(
     client_config,
     scopes=["openid", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
     redirect_uri=REDIRECT_URI
@@ -236,8 +236,8 @@ def authenticate_user():
     authorization_url, state = flow.authorization_url()
     st.session_state['state'] = state
     # st.write(f"Please log in [here]({authorization_url})")
-    if st.button('Log in'):
-        return authorization_url
+    # if st.button('Log in'):
+    st.markdown(f'<a href="{authorization_url}" target="_self">Log in with Google</a>', unsafe_allow_html=True)
         # webbrowser.open_new_tab(authorization_url)
 
 def get_user_info(code):
