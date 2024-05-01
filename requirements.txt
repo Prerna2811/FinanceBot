@@ -10,3 +10,4 @@ newsapi-python
 google-auth-oauthlib
 google-cloud-speech
 google-cloud-storage
+trubrics
