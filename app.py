@@ -241,8 +241,8 @@ def authenticate_user():
         st.session_state['authentication_initiated'] = True
 
 def check_authentication():
-    if 'code' in st.experimental_get_query_params():
-        code = st.experimental_get_query_params()['code'][0]
+    if 'code' not in st.query_params:
+        code = st.query_params['code']
         user_info = get_user_info(code)
         if user_info:
             st.session_state['authentication_status'] = 'Authenticated'
@@ -255,13 +255,13 @@ def check_authentication():
             st.error("Failed to authenticate. Please try logging in again.")
     return False
 
-# def get_user_info(code):
-#     flow.fetch_token(code=code)
-#     credentials = flow.credentials
-#     session = requests.Session()
-#     user_info = session.get('https://www.googleapis.com/oauth2/v3/userinfo',
-#                             headers={'Authorization': f'Bearer {credentials.token}'}).json()
-#     return user_info
+def get_user_info(code):
+    flow.fetch_token(code=code)
+    credentials = flow.credentials
+    session = requests.Session()
+    user_info = session.get('https://www.googleapis.com/oauth2/v3/userinfo',
+                            headers={'Authorization': f'Bearer {credentials.token}'}).json()
+    return user_info
 
 if 'authentication_status' not in st.session_state:
     st.session_state['authentication_status'] = None
