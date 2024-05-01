@@ -237,7 +237,8 @@ def authenticate_user():
     st.session_state['state'] = state
     # st.write(f"Please log in [here]({authorization_url})")
     if st.button('Log in'):
-        webbrowser.open_new_tab(authorization_url)
+        return authorization_url
+        # webbrowser.open_new_tab(authorization_url)
 
 def get_user_info(code):
     flow.fetch_token(code=code)
