@@ -225,7 +225,7 @@ def display_news_in_sidebar():
         st.sidebar.write("No news articles found.")
 
 # Google OAuth flow setup
-flow = Flow.from_client_config(
+flow = Flow.from_client_secrets_file(
     client_config,
     scopes=["openid", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"],
     redirect_uri=REDIRECT_URI
